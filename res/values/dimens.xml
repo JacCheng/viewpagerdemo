@@ -1,0 +1,6 @@
+<resources>
+
+    <dimen name="hint_width">100dp</dimen>
+    <dimen name="hint_offset">30dp</dimen>
+
+</resources>
