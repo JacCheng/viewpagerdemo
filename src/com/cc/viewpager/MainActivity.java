@@ -6,10 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.text.Html;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -20,7 +18,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class MainActivity extends Activity implements OnTouchListener, OnPageChangeListener {
+public class MainActivity extends Activity implements OnTouchListener{
 
 	private ViewPager mViewPager;
 	private View mHintView;
@@ -45,8 +43,7 @@ public class MainActivity extends Activity implements OnTouchListener, OnPageCha
 		mViewPager = (ViewPager) findViewById(R.id.viewpager);
 		ImagePagerAdapter pagerAdapter = new ImagePagerAdapter(this);
 		mViewPager.setAdapter(pagerAdapter);
-//		mViewPager.setOnTouchListener(this);
-		mViewPager.setOnPageChangeListener(this);
+		mViewPager.setOnTouchListener(this);
 	}
 
 	private void updateImgViewPagerHintText(boolean release){
@@ -124,27 +121,23 @@ public class MainActivity extends Activity implements OnTouchListener, OnPageCha
 
 		@Override
 		public Object instantiateItem(ViewGroup container, int position) {
-			if (position == getCount() - 1) {
-				((ViewPager) container).addView(mHintView, 0);
-				return mHintView;
-			}
 			View view = mInflater.inflate(R.layout.imageview_cell, null);
 			final ImageView imageView = (ImageView) view.findViewById(R.id.imageview);
 			TextView titleTxt = (TextView) view.findViewById(R.id.title_txt);
 			titleTxt.setText(String.format("第%d页", position + 1));
 			view.setLayoutParams(new FrameLayout.LayoutParams((int) (width * 0.8f), FrameLayout.LayoutParams.MATCH_PARENT));
 			imageView.setImageResource(position % 2 == 0 ? R.drawable.demo_1 : R.drawable.demo_share_img);
-//			if (position == getCount() - 1) {
-//				view.setOnTouchListener(new OnTouchListener() {
-//					@Override
-//					public boolean onTouch(View v, MotionEvent event) {
-//						if (event.getAction() == MotionEvent.ACTION_DOWN) {
-//							mImageViewPagerTouchDownX = event.getX();
-//						}
-//						return false;
-//					}
-//				});
-//			}
+			if (position == getCount() - 1) {
+				view.setOnTouchListener(new OnTouchListener() {
+					@Override
+					public boolean onTouch(View v, MotionEvent event) {
+						if (event.getAction() == MotionEvent.ACTION_DOWN) {
+							mImageViewPagerTouchDownX = event.getX();
+						}
+						return false;
+					}
+				});
+			}
 			view.setTag(position);
 			((ViewPager) container).addView(view, 0);
 			return view;
@@ -152,7 +145,7 @@ public class MainActivity extends Activity implements OnTouchListener, OnPageCha
 
 		@Override
 		public int getCount() {
-			return 5;
+			return 4;
 		}
 
 		@Override
@@ -169,20 +162,5 @@ public class MainActivity extends Activity implements OnTouchListener, OnPageCha
 		public int getItemPosition(Object object) {
 			return super.getItemPosition(object);
 		}
-	}
-
-	@Override
-	public void onPageScrollStateChanged(int state) {
-		
-	}
-
-	@Override
-	public void onPageScrolled(int position, float arg1, int arg2) {
-		Log.e("test", "---" + arg1 + "====" + arg2);
-	}
-
-	@Override
-	public void onPageSelected(int position) {
-		
 	}
 }
